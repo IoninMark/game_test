@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Online game test </title>
+    </head>
+    <body>
+        <h1>My test game</h1>
+        <p> Your ID: <span id="player-id">{{player_id}}</span></p>
+        <button onclick="sendAction('jump')">JUMP</button>
+        <div id="log"></div>
+
+        <script>
+            const playerId = document.getElementById('player-id').textContent;
+            const ws = new WebSocket(`ws://${window.location.host}/ws/${playerId}`);
+            ws.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                document.getElementById("log").innerHTML += `<p><b>${data.player}:</b> ${data.action}</p>`;
+            }
+
+            function sendAction(action) {
+                ws.send(JSON.stringify({type: "action", payload: action}))
+            }
+        </script>
+    </body>
+</html>
